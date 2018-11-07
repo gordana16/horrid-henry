@@ -85,12 +85,5 @@ export function addImgToHtmlEl(name, type) {
   return imgEl;
 }
 
-export function removeHighlight() {
-  $('.highlight').removeAttr('style');
-  $('.highlight').removeClass('highlight');
-}
 
-export function removeTilt() {
-  $('.tilt-left').removeClass('tilt-left');
-  $('.tilt-right').removeClass('tilt-right');
-}
+

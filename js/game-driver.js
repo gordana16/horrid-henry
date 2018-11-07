@@ -2,7 +2,6 @@
 
 import * as boardCtrl from './board-controller';
 import * as playersCtrl from './players-controller';
-import { removeTilt } from "./utilities";
 
 /*Creates empty board when page is loaded*/
 boardCtrl.initOnLoad();
@@ -68,7 +67,7 @@ $('.btn-defend').on('click', () => {
 
 /*Animation simulates the attack on the board. Remove animation from player on the board when his turn is over */
 $('#board').on('animationend', '.tilt-left, .tilt-right', () => {
-  removeTilt();
+  boardCtrl.removeTilt();
 });
 
 

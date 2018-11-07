@@ -99,9 +99,29 @@ export function updatePlayerPosition(player, pos) {
   }
 }
 
-/*Returns opponent player*/
-function getOpponent(player) {
-  return (player === player1) ? player2 : player1;
+/*Updates player health and checks if game is over */
+export function updatePlayerHealth(player, force) {
+  player.health -= force;
+  setHealthDOM(player);
+  if (player.health <= 0) {
+    disableButtons();
+    const opponent = getOpponent(player);
+    $('#winner').html(opponent.name);
+    $('#game-over').css('display', 'block');
+  }
+}
+
+/*Replaces player's weapon on the panel*/
+export function replacePlayerWeapon(player, weapon) {
+
+  player.weapon = weapon;
+  player.force = weapon.damage;
+  let $weaponElement = $('#player-' + player.id + '> .force');
+  $weaponElement.children('img').remove();
+  let newDOMImg = addImgToHtmlEl(weapon.name, 'png ');
+  $weaponElement.prepend(newDOMImg);
+  $weaponElement.children('img').attr('alt', weapon.name);
+  $weaponElement.children('#damage-' + player.id).html(weapon.damage);
 }
 
 /*Returns true if players are next to one another, ignores those players which positions are not in the same row on the board */
@@ -113,9 +133,9 @@ function isClash(player) {
   return (isAdjacent(pos1, pos2) && (absDistance === 1 || absDistance === columnLen));
 }
 
-/*Hides the defend button*/
-export function hideDefendButton(player) {
-  $('#player-' + player.id + ' > .btn-defend').css('display', 'none');
+/*Returns opponent player*/
+function getOpponent(player) {
+  return (player === player1) ? player2 : player1;
 }
 
 /*Shows the attack button*/
@@ -145,30 +165,18 @@ function enableButtons() {
   $('.btn-defend').removeAttr('disabled');
 }
 
-/*Updates player health and checks if game is over */
-export function updatePlayerHealth(player, force) {
-  player.health -= force;
-  setHealthDOM(player);
-  if (player.health <= 0) {
-    disableButtons();
-    const opponent = getOpponent(player);
-    $('#winner').html(opponent.name);
-    $('#game-over').css('display', 'block');
-  }
+/*Hides the defend button*/
+export function hideDefendButton(player) {
+  $('#player-' + player.id + ' > .btn-defend').css('display', 'none');
 }
 
-/*Replaces player's weapon on the panel*/
-export function replacePlayerWeapon(player, weapon) {
-
-  player.weapon = weapon;
-  player.force = weapon.damage;
-  let $weaponElement = $('#player-' + player.id + '> .force');
-  $weaponElement.children('img').remove();
-  let newDOMImg = addImgToHtmlEl(weapon.name, 'png ');
-  $weaponElement.prepend(newDOMImg);
-  $weaponElement.children('img').attr('alt', weapon.name);
-  $weaponElement.children('#damage-' + player.id).html(weapon.damage);
+export function removeTilt() {
+  $('.tilt-left').removeClass('tilt-left');
+  $('.tilt-right').removeClass('tilt-right');
 }
+
+
+
 
 
 

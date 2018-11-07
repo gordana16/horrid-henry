@@ -1,8 +1,11 @@
+/*script that transpiles files from ES6 to ES5*/
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
 const gutil = require('gulp-util');
 const del = require('del');
+const runSequence = require('run-sequence');
+
 
 const paths = {
   srcJS: 'js/**.*',
@@ -24,7 +27,9 @@ gulp.task('clean', function () {
   return del(paths.dist);
 });
 
-gulp.watch(paths.srcJS, ['transpile']);
+gulp.watch(paths.srcJS, () => {
+  runSequence('clean', 'transpile');
+});
 
 
 

@@ -42,7 +42,7 @@ export function initOnStart(player1, player2) {
 
 /*Re-start the game from clean state */
 export function resetAll() {
-  utils.removeHighlight();
+  removeHighlight();
   $('.cell img:eq(1)').remove();
   $('.in-motion').removeClass('in-motion');
 }
@@ -135,8 +135,7 @@ export function movePlayer(player, newPos) {
       $('#board').trigger(event);
     }
   }
-  $('.highlight').removeAttr('style');
-  $('.highlight').removeClass('highlight');
+  removeHighlight();
 
   const $currCell = $('#cell-' + oldPos);
   const $currCellImg = $('#cell-' + oldPos + ' > img');
@@ -179,7 +178,7 @@ export function replaceWeaponOnBoard(player, newPos, weaponOnBoard) {
 
 /*Illustrate the attack */
 export function attack(fromPos, toPos) {
-  utils.removeHighlight();
+  removeHighlight();
   const distance = fromPos - toPos;
   const $playerCell = $('#cell-' + fromPos + ' > img');
   if (distance > 0) {
@@ -188,7 +187,6 @@ export function attack(fromPos, toPos) {
   else {
     $playerCell.addClass('tilt-right');
   }
-
 }
 
 /*Illustrate the defense */
@@ -202,6 +200,14 @@ export function removeShield(position) {
   $('.shield').remove();
 }
 
+function removeHighlight() {
+  $('.highlight').removeAttr('style');
+  $('.highlight').removeClass('highlight');
+}
 
+export function removeTilt() {
+  $('.tilt-left').removeClass('tilt-left');
+  $('.tilt-right').removeClass('tilt-right');
+}
 
 
