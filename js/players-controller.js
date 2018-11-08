@@ -6,7 +6,7 @@ import { isAdjacent, addImgToHtmlEl } from "./utilities";
 
 let player1, player2;
 
-/*Create player objects and their default weapon object*/
+/*Create the player objects and their default weapon object*/
 export function createPlayers() {
   player1 = new Player('Henry', 1, 100, new Weapon('yellow-cup', 10));
   player2 = new Player('Maggie', 2, 100, new Weapon('yellow-cup', 10));
@@ -19,9 +19,9 @@ export function createPlayers() {
   return [player1, player2];
 }
 
-/*Re-start the game from clean state */
+/*Re-start the game from the clean state */
 export function resetAll() {
-  //bring buttons to initial state
+  //bring the buttons to the initial state
   hideButtons();
   enableButtons();
   $('.active-panel').removeClass('active-panel');
@@ -30,7 +30,7 @@ export function resetAll() {
   $('.force:not(:has(img))').prepend(newDOMImg);
 }
 
-/*Displays player's health on the panel */
+/*Displays the player's health on the panel */
 function setHealthDOM(player) {
   if (player.health <= 0) {
     player.health = 0;
@@ -38,7 +38,7 @@ function setHealthDOM(player) {
   $('#health-' + player.id).html(player.health);
 }
 
-/*Displays weapon's force on the panel */
+/*Displays the weapon's force on the panel */
 function setWeaponDamageDOM(player) {
   $('#damage-' + player.id).html(player.weapon.damage);
 }
@@ -73,17 +73,17 @@ export function togglePlayers() {
   setPlayerOn(playerOff);
 }
 
-/*Returns both players*/
+/*Returns the both players*/
 export function getPlayers() {
   return (player1.isActive) ? [player1, player2] : [player2, player1];
 }
 
-/*Return player which is currently on*/
+/*Return the player which is currently on*/
 export function getActivePlayer() {
   return (player1.isActive) ? player1 : player2;
 }
 
-/*Updates player position after moving. If players are next to one another, the battle begins and Attack/Defend buttons have to be displayed*/
+/*Updates the player's position after moving. If the players are next to one another, the battle begins and Attack/Defend buttons have to be displayed*/
 export function updatePlayerPosition(player, pos) {
   $('.in-motion').removeClass('in-motion');
 
@@ -99,7 +99,7 @@ export function updatePlayerPosition(player, pos) {
   }
 }
 
-/*Updates player health and checks if game is over */
+/*Updates the player's health and checks if game is over */
 export function updatePlayerHealth(player, force) {
   player.health -= force;
   setHealthDOM(player);
@@ -111,7 +111,7 @@ export function updatePlayerHealth(player, force) {
   }
 }
 
-/*Replaces player's weapon on the panel*/
+/*Replaces the player's weapon on the panel*/
 export function replacePlayerWeapon(player, weapon) {
 
   player.weapon = weapon;
@@ -133,7 +133,7 @@ function isClash(player) {
   return (isAdjacent(pos1, pos2) && (absDistance === 1 || absDistance === columnLen));
 }
 
-/*Returns opponent player*/
+/*Returns the opponent player*/
 function getOpponent(player) {
   return (player === player1) ? player2 : player1;
 }

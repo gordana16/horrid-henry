@@ -3,7 +3,7 @@
 import * as boardCtrl from './board-controller';
 import * as playersCtrl from './players-controller';
 
-/*Creates empty board when page is loaded*/
+/*Creates the empty board when page is loaded*/
 boardCtrl.initOnLoad();
 
 /*Starts the game. Active player is randomly chosen. Players, weapons and obstacles are randomly positioned on the board */
@@ -28,7 +28,7 @@ $('.btn-close').on('click', () => {
   $('#game-over').css('display', 'none');
 });
 
-/*Higlights possible movements when player cell is hovered*/
+/*Higlights the possible movements when player cell is hovered*/
 $('#board').on('mouseenter', '.in-motion', event => {
   const activePlayer = playersCtrl.getActivePlayer();
   boardCtrl.highlightMovement(activePlayer.position);

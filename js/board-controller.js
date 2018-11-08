@@ -1,11 +1,16 @@
 /*The role of board-controller  module is to manage objects on the board */
 
-import { boardSize, rowLen, obstaclesNum, objectsMap, maxMovementSpan } from './settings';
+import { boardSize, rowLen, obstaclesNum, maxMovementSpan } from './settings';
 import { GameElement, Player, Weapon } from "./figures";
 import * as utils from './utilities';
 
-/*Creates empty board when page is loaded*/
+/*key-value pairs of positions and objects on the board*/
+let objectsMap;
+
+/*Creates the empty board when page is loaded*/
 export function initOnLoad() {
+  objectsMap = new Map();
+
   for (let i = 0; i < boardSize; i++) {
     $('#board').append('<div>');
     $('#board div:nth-child(' + (i + 1) + ')').addClass('cell').attr('id', 'cell-' + i);
@@ -49,7 +54,7 @@ export function resetAll() {
 
 /*Takes care that obstacles do not form closed shape, player and weapons are not positioned one next to another */
 function isRightPosition(object, position) {
-  const virtSiblings = utils.getAdjacentObjects(position);
+  const virtSiblings = getAdjacentObjects(position);
 
   //positioning Players and Weapons
   if (!isObstacle(object)) {
@@ -70,15 +75,6 @@ function isRightPosition(object, position) {
     return (virtSiblings.findIndex(el => (utils.isEdgeHorizontal(el.position))) > -1);
   }
   return true;
-}
-
-function isObstacle(object) {
-  if (!(object instanceof Weapon) && !(object instanceof Player))
-    return true;
-}
-
-function isCellTaken(position) {
-  return ($('#cell-' + position).children().length > 0);
 }
 
 /*Higlights horizontal and vertical cells near the active player */
@@ -210,4 +206,28 @@ export function removeTilt() {
   $('.tilt-right').removeClass('tilt-right');
 }
 
+function getAdjacentObjects(pos) {
+
+  const adjMap = utils.getAdjacentIndexes(pos);
+
+  const adjObjects = [];
+
+  for (let [key, value] of adjMap) {
+    const obj = objectsMap.get(value);
+    if (obj === undefined)
+      continue;
+    adjObjects.push(obj);
+  }
+
+  return adjObjects;
+}
+
+function isObstacle(object) {
+  if (!(object instanceof Weapon) && !(object instanceof Player))
+    return true;
+}
+
+function isCellTaken(position) {
+  return ($('#cell-' + position).children().length > 0);
+}
 

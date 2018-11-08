@@ -1,6 +1,6 @@
 /*a bunch of helper functions*/
 
-import { rowLen, columnLen, objectsMap } from './settings';
+import { rowLen, columnLen } from './settings';
 
 export function isFirstRow(pos) {
   return (Math.floor(pos / rowLen) === 0);
@@ -39,8 +39,8 @@ export function isAdjacent(pos1, pos2) {
   return false;
 }
 
-/*return positions that are next to one another on the board but ignore those which belong different rows*/
-function getAdjacentIndexes(pos) {
+/*return the positions that are next to one another on the board, ignore edge positions*/
+export function getAdjacentIndexes(pos) {
   const left = (pos % rowLen > 0) ? (pos - 1) : -1;
   const right = (pos % rowLen < (rowLen - 1)) ? pos + 1 : -1;
   const up = (pos / rowLen > 0) ? (pos - rowLen) : -1;
@@ -62,22 +62,6 @@ function getAdjacentIndexes(pos) {
   adjMap.set('leftDown', leftDown);
 
   return adjMap;
-}
-
-export function getAdjacentObjects(pos) {
-
-  const adjMap = getAdjacentIndexes(pos);
-
-  const adjObjects = [];
-
-  for (let [key, value] of adjMap) {
-    const obj = objectsMap.get(value);
-    if (obj === undefined)
-      continue;
-    adjObjects.push(obj);
-  }
-
-  return adjObjects;
 }
 
 export function addImgToHtmlEl(name, type) {
