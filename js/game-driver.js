@@ -29,7 +29,7 @@ $('.btn-close').on('click', () => {
 });
 
 /*Higlights the possible movements when player cell is hovered*/
-$('#board').on('mouseenter', '.in-motion', event => {
+$('#board').on('mouseenter', '.in-motion', () => {
   const activePlayer = playersCtrl.getActivePlayer();
   boardCtrl.highlightMovement(activePlayer.position);
 });
