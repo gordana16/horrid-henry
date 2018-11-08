@@ -1,4 +1,4 @@
-/*The role of this module is controll the whole application. It specifes event handlers and responses to the events*/
+/*The role of this module is to controll the whole application. It specifes event handlers and responses to the events*/
 
 import * as boardCtrl from './board-controller';
 import * as playersCtrl from './players-controller';

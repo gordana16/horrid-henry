@@ -1,4 +1,4 @@
-/*The role of players-controller  module is to manage data displayed on the player's panel*/
+/*The role of players-controller module is to manage data displayed on the player's panel*/
 
 import { GameElement, Player, Weapon } from "./figures";
 import { columnLen } from "./settings";
