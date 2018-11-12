@@ -4,6 +4,23 @@ export class GameElement {
     this.name = name;
     this.position = -1;
   }
+
+  getName() {
+    return this.name;
+  }
+
+  setName(name) {
+    this.name = name;
+  }
+
+  move(pos) {
+    this.position = pos;
+  }
+
+  getPosition() {
+    return this.position;
+  }
+
 }
 
 /*Player class inherits from GameElement*/
@@ -14,8 +31,43 @@ export class Player extends GameElement {
     this.health = health;
     this.weapon = weapon;
     this.force = weapon.damage;
-    this.isActive = false;
+    this.active = false;
   }
+
+  getId() {
+    return this.id;
+  }
+  isActive() {
+    return this.active;
+  }
+
+  setActiveState(active) {
+    this.active = active;
+  }
+  setHealth(health) {
+    this.health = health;
+  }
+
+  getHealth() {
+    return this.health;
+  }
+
+  setWeapon(weapon) {
+    this.weapon = weapon;
+  }
+
+  getWeapon() {
+    return this.weapon;
+  }
+
+  setForce(force) {
+    this.force = force;
+  }
+
+  getForce() {
+    return this.force;
+  }
+
 }
 
 /*Weapon class inherits from GameElement*/
@@ -24,4 +76,13 @@ export class Weapon extends GameElement {
     super(name);
     this.damage = damage;
   }
+
+  getDamage() {
+    return this.damage;
+  }
+
+  setDamage(damage) {
+    this.damage = damage;
+  }
+
 }

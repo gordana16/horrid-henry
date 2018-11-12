@@ -1,6 +1,6 @@
 /*The role of board-controller  module is to manage objects on the board */
 
-import { boardSize, rowLen, obstaclesNum, maxMovementSpan } from './settings';
+import { boardSize, rowLen, obstaclesNum, maxMovementSpan, weaponsConfig } from './settings';
 import { GameElement, Player, Weapon } from "./figures";
 import * as utils from './utilities';
 
@@ -18,13 +18,17 @@ export function initOnLoad() {
 }
 
 /*Creates weapon, obstacle objects and arranges positions of all objects on the board */
-export function initOnStart(player1, player2) {
+export function initOnStart(players) {
   $('.cell').html('');
   objectsMap.clear();
 
-  const objectsOnBoard = [player1, player2, new Weapon('pink-cup', 20),
-    new Weapon('blue-cup', 30), new Weapon('green-cup', 40)];
-
+  let objectsOnBoard = [];
+  for (const player of players) {
+    objectsOnBoard.push(player);
+  }
+  for (const wConfig of weaponsConfig) {
+    objectsOnBoard.push(new Weapon(wConfig.name, wConfig.damage));
+  }
   for (let i = 0; i < obstaclesNum; i++) {
     objectsOnBoard.push(new GameElement('wall'));
   }
@@ -35,14 +39,17 @@ export function initOnStart(player1, player2) {
       index = Math.floor(Math.random() * boardSize);
     } while (isCellTaken(index) || !isRightPosition(el, index));
 
-    el.position = index;
+    el.move(index);
+    if (el instanceof Player) {
+      const weapon = el.getWeapon();
+      weapon.move(index);
+    }
     objectsMap.set(index, el);
 
-    const img = utils.addImgToHtmlEl(el.name, 'png');
-    $('#cell-' + el.position).append(img);
+    const img = utils.addImgToHtmlEl(el.getName(), 'png');
+    $('#cell-' + el.getPosition()).append(img);
   }
-  player1.weapon.position = player1.position;
-  player2.weapon.position = player2.position;
+
 }
 
 /*Re-start the game from clean state */
@@ -103,8 +110,8 @@ function addHighlight(position, step) {
 
 /*Moves player on the board, fire an event if player passes over the weapon cell*/
 export function movePlayer(player, newPos) {
-  const oldPos = player.position;
-  const oldEl = objectsMap.get(oldPos)
+  const oldPos = player.getPosition();
+  const oldEl = objectsMap.get(oldPos);
   if (oldEl instanceof Array) {
     const i = oldEl.findIndex(el => el instanceof Weapon);
     const weapon = oldEl[i];
@@ -159,17 +166,19 @@ export function movePlayer(player, newPos) {
 
 /*Replaces player's weapon on the board */
 export function replaceWeaponOnBoard(player, newPos, weaponOnBoard) {
-  const $weapon = $('#cell-' + weaponOnBoard.position + ' > img');
+  const weaponPos = weaponOnBoard.getPosition();
+  const $weapon = $('#cell-' + weaponPos + ' > img');
   const $weaponCell = $weapon.parent();
   $weapon.remove();
-  const newDOMImg = utils.addImgToHtmlEl(player.weapon.name, 'png');
+  const weapon = player.getWeapon();
+  const newDOMImg = utils.addImgToHtmlEl(weapon.getName(), 'png');
   $weaponCell.append(newDOMImg);
-  if (weaponOnBoard.position == newPos) {
-    $('#cell-' + weaponOnBoard.position + ' > img').hide();
+  if (weaponPos == newPos) {
+    $('#cell-' + weaponPos + ' > img').hide();
   }
-  const newWeaponOnBoard = player.weapon;
-  newWeaponOnBoard.position = weaponOnBoard.position;
-  objectsMap.set(weaponOnBoard.position, newWeaponOnBoard);
+  const newWeaponOnBoard = player.getWeapon();
+  newWeaponOnBoard.move(weaponPos);
+  objectsMap.set(weaponPos, newWeaponOnBoard);
 }
 
 /*Illustrate the attack */
