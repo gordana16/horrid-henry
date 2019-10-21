@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Horrid Henry Game</title>
+    <!-- inject:css -->
+    <!-- endinject -->
+  </head>
+
+  <body>
+    <header>
+      <h1>Horrid Henry Game</h1>
+      <div class="buttons">
+        <button class="btn" id="btn-start">Start</button>
+        <button class="btn" id="btn-rules">Rules</button>
+      </div>
+    </header>
+
+    <div class="game-wrapper">
+      <aside class="player" id="player-1">
+        <h3>Henry</h3>
+        <img class="player-img" src="img/henry-profile.png" alt="Henry" />
+        <div class="health">
+          Health:
+          <span class="points" id="health-1">0</span>
+        </div>
+        <div class="force">
+          <img src="img/yellow-cup.png" alt="yellow-cup" /> Force:
+          <span class="points" id="damage-1">0</span>
+        </div>
+        <button class="btn btn-attack">Attack</button>
+        <button class="btn btn-defend">Defend</button>
+      </aside>
+      <main id="board-wrapper">
+        <div id="board">
+          <!--game-panel-->
+        </div>
+      </main>
+      <aside class="player" id="player-2">
+        <h3>Maggie</h3>
+        <img class="player-img" src="img/maggie-profile.png" alt="Maggie" />
+        <div class="health">
+          <span>Health</span>
+          <span class="points" id="health-2">0</span>
+        </div>
+        <div class="force">
+          <img src="img/yellow-cup.png" alt="yellow-cup" /> Force:
+          <span class="points" id="damage-2">0</span>
+        </div>
+        <button class="btn btn-attack">Attack</button>
+        <button class="btn btn-defend">Defend</button>
+      </aside>
+    </div>
+
+    <div id="game-over">
+      <button class="btn btn-close">&times;</button>
+      <div class="winner-message">
+        <h2>The winner is:</h2>
+        <span id="winner"></span>
+        <br />
+        <span id="message">Congratulations!</span>
+      </div>
+    </div>
+
+    <div id="game-rules">
+      <button class="btn btn-close">&times;</button>
+      <div class="rules-content">
+        <h2>Game Rules</h2>
+        <ul>
+          <li>
+            For each turn, players can move from one to three boxes
+            (horizontally or vertically) before ending their turn.
+          </li>
+          <li>
+            If players pass over a box containing a weapon, they leave their
+            current weapon on site and replace it with the new one.
+          </li>
+          <li>
+            If players cross over adjacent squares (horizontally or vertically),
+            a battle begins
+          </li>
+          <li>
+            The player can choose to attack or defend against the next shot
+          </li>
+          <li>
+            As soon as the life points of players falls to 0, they lose. A
+            message appears and the game is over
+          </li>
+        </ul>
+        Good luck!
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- inject:js -->
+    <!-- endinject -->
+  </body>
+</html>

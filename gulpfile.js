@@ -1,37 +1,94 @@
 /*gulp script which transpiles files from ES6 to ES5, bundle output files and minify the result*/
 
-const gulp = require('gulp');
-const babelify = require('babelify');
-const browserify = require('browserify');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
-const uglify = require('gulp-uglify');
-const rename = require('gulp-rename');
-const del = require('del');
+const gulp = require("gulp");
+const del = require("del");
+const inject = require("gulp-inject");
+const webserver = require("gulp-webserver");
+const serveStatic = require("serve-static");
+const runSequence = require("run-sequence");
 
-/*first clean any old dist, transpile js files, bundle the result to bundle.js, put bundle.js in dist folder, minify and rename it bundle.min.js and finally put in dist folder*/
-gulp.task('minify', ['clean'], () => {
-  browserify(['node_modules/@babel/polyfill/dist/polyfill.js', 'js/game-driver.js'])
-    .transform(babelify)
-    .bundle()
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest('dist'))
-    .pipe(buffer())
-    .pipe(uglify())
-    .pipe(rename('bundle.min.js'))
-    .pipe(gulp.dest('dist'));
+const paths = {
+  src: "app/**/*",
+  srcHTML: "app/**/*.html",
+  srcCSS: "app/**/*.css",
+  srcImg: "app/**/*.+(png|jpg|gif|svg)",
+  srcJS: "app/**/*.js",
+
+  tmp: "tmp",
+  tmpIndex: "tmp/index.html",
+  tmpCSS: "tmp/**/*.css",
+  tmpImg: "tmp/**/*.+(png|jpg|gif|svg)",
+  tmpJS: "tmp/**/*.js",
+
+  dist: "dist",
+  distIndex: "dist/index.html",
+  distCSS: "dist/**/*.css",
+  distJS: "dist/**/*.js"
+};
+
+/**
+ * DEVELOPMENT
+ */
+gulp.task("html:tmp", function() {
+  return gulp.src(paths.srcHTML).pipe(gulp.dest(paths.tmp));
 });
 
-/*delete everything in dist folder*/
-gulp.task('clean', () => {
-  del('dist');
+gulp.task("css:tmp", function() {
+  return gulp.src(paths.srcCSS).pipe(gulp.dest(paths.tmp));
 });
 
-/*watching js files for changes and run the minify task should any changes occur*/
-gulp.task('watch', () => {
-  gulp.watch('js/**.*', ['minify'])
+gulp.task("img:tmp", function() {
+  return gulp.src(paths.srcImg).pipe(gulp.dest(paths.tmp));
 });
 
-/*run the task simply by typing gulp*/
-gulp.task('default', ['minify']);
+gulp.task("js:tmp", function() {
+  return gulp.src(paths.srcJS).pipe(gulp.dest(paths.tmp));
+});
 
+gulp.task("clean:tmp", function() {
+  return del(paths.tmp);
+});
+gulp.task("copy:tmp", function(cb) {
+  return runSequence(
+    "clean:tmp",
+    ["html:tmp", "css:tmp", "js:tmp", "img:tmp"],
+    cb
+  );
+});
+
+gulp.task("inject:tmp", ["copy:tmp"], function() {
+  const css = gulp.src(paths.tmpCSS);
+  const js = gulp.src(paths.tmpJS);
+  return gulp
+    .src(paths.tmpIndex)
+    .pipe(inject(css, { relative: true }))
+    .pipe(
+      inject(js, {
+        transform: function(filepath) {
+          return `<script src="${filepath}" type="module"></script>`;
+        },
+        relative: true
+      })
+    )
+    .pipe(gulp.dest(paths.tmp));
+});
+
+gulp.task("serve", ["inject:tmp"], function() {
+  return gulp.src(paths.tmp).pipe(
+    webserver({
+      port: 3000,
+      livereload: true,
+      middleware: [serveStatic(paths.tmp, { extensions: ["js"] })],
+      open: true
+    })
+  );
+});
+
+gulp.task("watch:tmp", ["serve"], function() {
+  gulp.watch(paths.src, ["inject:tmp"]);
+});
+
+gulp.task("default", ["watch:tmp"]);
+/**
+ * DEVELOPMENT END
+ */
