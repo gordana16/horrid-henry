@@ -1,4 +1,4 @@
-#Horrid Henry Game
+# Horrid Henry Game
 ## Project6 OpenClassrooms Frontend Path
 ### JavaScript, JQuery, HTML5, CSS3
 
