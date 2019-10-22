@@ -6,6 +6,14 @@ const inject = require("gulp-inject");
 const webserver = require("gulp-webserver");
 const serveStatic = require("serve-static");
 const runSequence = require("run-sequence");
+const htmlclean = require("gulp-htmlclean");
+const cleanCSS = require("gulp-clean-css");
+const concat = require("gulp-concat");
+const babelify = require("babelify");
+const browserify = require("browserify");
+const source = require("vinyl-source-stream");
+const buffer = require("vinyl-buffer");
+const uglify = require("gulp-uglify");
 
 const paths = {
   src: "app/**/*",
@@ -13,6 +21,7 @@ const paths = {
   srcCSS: "app/**/*.css",
   srcImg: "app/**/*.+(png|jpg|gif|svg)",
   srcJS: "app/**/*.js",
+  srcEntryJS: "app/js/game-driver.js",
 
   tmp: "tmp",
   tmpIndex: "tmp/index.html",
@@ -92,3 +101,56 @@ gulp.task("default", ["watch:tmp"]);
 /**
  * DEVELOPMENT END
  */
+/**
+ * PRODUCTION
+ */
+gulp.task("html:dist", function() {
+  return gulp
+    .src(paths.srcHTML)
+    .pipe(htmlclean())
+    .pipe(gulp.dest(paths.dist));
+});
+
+gulp.task("css:dist", function() {
+  return gulp
+    .src(paths.srcCSS)
+    .pipe(concat("style.min.css"))
+    .pipe(cleanCSS())
+    .pipe(gulp.dest(paths.dist));
+});
+gulp.task("img:dist", function() {
+  return gulp.src(paths.srcImg).pipe(gulp.dest(paths.dist));
+});
+/* transpile js files, bundle the result, minify to bundle.min.js */
+gulp.task("js:dist", function(cb) {
+  return browserify([require.resolve("@babel/polyfill"), paths.srcEntryJS])
+    .transform(babelify)
+    .bundle()
+    .pipe(source("bundle.min.js"))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(gulp.dest(paths.dist));
+});
+
+gulp.task("clean:dist", function() {
+  return del(paths.dist);
+});
+gulp.task("copy:dist", function(cb) {
+  return runSequence(
+    "clean:dist",
+    ["html:dist", "css:dist", "js:dist", "img:dist"],
+    cb
+  );
+});
+
+gulp.task("inject:dist", ["copy:dist"], function() {
+  const css = gulp.src(paths.distCSS);
+  const js = gulp.src(paths.distJS);
+  return gulp
+    .src(paths.distIndex)
+    .pipe(inject(css, { relative: true }))
+    .pipe(inject(js, { relative: true }))
+    .pipe(gulp.dest(paths.dist));
+});
+
+gulp.task("build", ["inject:dist"]);
